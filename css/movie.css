@@ -1,0 +1,141 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    line-height: 1.2;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    position: relative;
+}
+
+a {
+    text-decoration: none;
+    color: #999;
+}
+
+/* main a::after{
+  content: "";
+  display: block;
+  clear: both;
+} */
+
+main {
+    height: calc(100vh - 50px);
+
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
+main .loading {
+    padding: 10px;
+    text-align: center;
+    display: none;
+}
+
+main .loading .iconfont {
+    display: inline-block;
+    animation: 1s rotate linear infinite;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg)
+    }
+}
+
+main .item {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+main .item a {
+    display: flex;
+}
+
+main h2 {
+    color: #000;
+}
+
+main>section {
+    display: none;
+}
+
+main>section:nth-child(1) {
+    display: block;
+}
+
+main .detail {
+    padding-left: 10px;
+}
+
+main .detail>div {
+    margin-top: 4px;
+}
+
+/* main .img::after{
+  content: '';
+  display: block;
+  clear: both;
+} */
+
+section img {
+    width: 70px;
+}
+
+section div {
+    font-size: 12px;
+}
+
+section .input{
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+section:nth-child(3) .input a {
+    background: rgb(0, 181, 29);
+    padding: 5px;
+    border-radius: 3px;
+    color: white;
+    font-size: 14px;
+    position: absolute;
+    top: 3px;
+    right: 10px;
+}
+section:nth-child(3) .layout{
+    margin-top: 38px;
+}
+section:nth-child(3) input {
+    border-radius: 3px;
+    padding: 3px;
+    width: 100%;
+    line-height: 24px;
+}
+
+footer {
+    display: flex;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    height: 50px;
+    border-top: 1px solid #ccc;
+}
+
+footer>span {
+    flex: 1;
+    text-align: center;
+    padding-top: 10px;
+}
+
+footer .active {
+    color: rgb(0, 181, 29)
+}

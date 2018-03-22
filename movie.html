@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>豆瓣电影</title>
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_600989_swtxow8y66xenrk9.css">
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            line-height: 1.2;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            position: relative;
+        }
+
+        a {
+            text-decoration: none;
+            color: #999;
+        }
+
+        /* main a::after{
+          content: "";
+          display: block;
+          clear: both;
+      } */
+
+        main {
+            height: calc(100vh - 50px);
+
+            overflow: scroll;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        main .loading {
+            padding: 10px;
+            text-align: center;
+            display: none;
+        }
+        main .loading .iconfont{
+            display: inline-block;
+            animation: 1s rotate linear infinite;
+        }
+        @keyframes rotate {
+            0%{transform: rotate(0deg);}
+            100%{transform: rotate(360deg)}
+        }
+        main .item {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        main a {
+            display: flex;
+        }
+
+        main h2 {
+            color: #000;
+        }
+
+        main>section {
+            display: none;
+        }
+
+        main>section:nth-child(1) {
+            display: block;
+        }
+
+        main .detail {
+            padding-left: 10px;
+        }
+
+        main .detail>div {
+            margin-top: 4px;
+        }
+
+        /* main .img::after{
+          content: '';
+          display: block;
+          clear: both;
+      } */
+
+        section img {
+            width: 70px;
+        }
+
+        section div {
+            font-size: 12px;
+        }
+
+        footer {
+            display: flex;
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+            height: 50px;
+            border-top: 1px solid #ccc;
+        }
+
+        footer>span {
+            flex: 1;
+            text-align: center;
+            padding-top: 10px;
+        }
+
+        footer .active {
+            color: rgb(0, 181, 29)
+        }
+        
+    </style>
+</head>
+
+<body>
+    <main>
+        <section ></section>
+        <section>2</section>
+        <section>3</section>
+        <div class="loading">
+            <span class="iconfont icon-loading"></span>
+        </div>
+    </main>
+    <footer>
+        <span class="iconfont icon-top250 active">TOP250</span>
+        <span class="iconfont icon-hot">热映</span>
+        <span class="iconfont icon-search">搜索</span>
+    </footer>
+    <script>
+        var movie;
+        var index = 0;
+        var isLoading = false
+        $("footer>span").click(function () {
+            let index = $(this).index();
+            $(this).addClass("active").siblings().removeClass("active");
+            $('section').hide();
+            $("section").eq(index).fadeIn();
+        })
+        getData();
+
+        function getData() {
+            if (isLoading) return;
+            isLoading = true;
+            $("main .loading").fadeIn('slow')
+            $.ajax({
+                url: "http://api.douban.com/v2/movie/top250",
+                dataType: "jsonp",
+                method: "GET",
+                data: {
+                    start: index,
+                    count: 20
+                }
+            }).done(function (ret) {
+                movie = ret;
+                ret.subjects.forEach(setData);
+                index += 20;
+            }).fail(function () {
+                console.log("erro")
+            }).always(function () {
+                isLoading = false;
+                $("main .loading").fadeOut("slow")
+            })
+        }
+        var clock;
+        $('main').scroll(function () {
+            if (clock) {
+                clearTimeout(clock);
+            }
+            clock = setTimeout(function () {
+                if ($('section').eq(0).height() - 10 <= $('main').scrollTop() + $('main').height()) {
+                    getData();
+                    console.log("ok")
+                }
+                console.log("out")
+            }, 300)
+
+        })
+
+        function setStr(arr) {
+            let array = []
+            arr.forEach(function (n) {
+                array.push(n.name);
+            })
+            return array.join('、')
+        }
+
+        function setData(data) {
+            let template =
+                `
+            <div class="item">
+                <a href="#">
+                    <div class="img">
+                        <img src="" >
+                    </div>
+                    <div class="detail">
+                        <div>
+                            <h2></h2>
+                        </div>
+                        <div>
+                            <span class="rate"></span> / 收藏:
+                            <span class="collect"></span>
+                        </div>
+                        <div>
+                            <span class="year"></span>
+                            <span class="type"> </span>
+                        </div>
+                        <div>导演:
+                            <span class="director"> </span>
+                        </div>
+                        <div>主演:
+                            <span class="actor"></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            `
+            let node = $(template);
+            node.find("img").attr("src", data.images.medium);
+            node.find("h2").text(data.title);
+            node.find(".rate").text(data.rating.average)
+            node.find(".collect").text(data.collect_count)
+            node.find(".director").text(data.directors[0].name)
+            node.find(".actor").text(setStr(data.casts))
+            node.find(".year").text(data.year + '/')
+            node.find(".type").text(data.genres.join("/"))
+            $("section:nth-child(1)").append(node);
+
+        }
+    </script>
+</body>
+
+</html>

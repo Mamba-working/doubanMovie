@@ -154,7 +154,7 @@ function getData() {
     // }
     $("main .loading").fadeIn('slow')
     $.ajax({
-        url: `http://api.douban.com/${this.url}`,
+        url: `https://api.douban.com/${this.url}`,
         dataType: "jsonp",
         method: "GET",
         data: {

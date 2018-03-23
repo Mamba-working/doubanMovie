@@ -2,7 +2,6 @@ var app = {
     init: function () {
         this.$tabs = $('footer>span')
         this.$panels = $('section')
-        this.total = 230;
         this.bind()
         this.arr =[top250,hot,search]
         top250.init()
@@ -19,11 +18,9 @@ var app = {
             let indx = $(this).index()
             _this.arr.forEach(function(n,index){
                 if(index !== indx){
-                    console.log(indx)
                     n.now=false;
                 }
             })
-            console.log()
             $("main").scrollTop(0);
         })
     }
@@ -90,7 +87,6 @@ var hot = {
                 if ($('section').eq(1).height() - 10 <= $('main').scrollTop() + $(
                         'main').height()) {
                     that.getData();
-                    console.log(that)
                 }
             }, 300)
 
@@ -107,20 +103,22 @@ var search = {
         this.total = 60;
         this.count = 15;
         this.$input = $("section input")
-        this.$search = $("section:nth-child(3) a")
+        this.$search = $("section:nth-child(3) .input a")
         this.data = ''
         this.start();
     },
     start: function () {
+        console.log(this.$search[0])
         this.$search.on("click", getData.bind(this));
         this.$search[0].addEventListener("click", function () {
             this.clear();
+            console.log("ok")
         }.bind(this))
     },
     getData: getData,
     setData: setData,
     clear: function () {
-        $(`section:nth-child(3)>a,section:nth-child(3)>input`).siblings().remove('item')
+        $("section:nth-child(3) .layout").children().remove();
     },
     lazyLoad: function () {
         var that = this;

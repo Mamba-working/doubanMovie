@@ -100,7 +100,7 @@ var search = {
         this.id = 3;
         this.url = "/v2/movie/search";
         this.isfinish = false;
-        this.total = 60;
+        this.total = 75;
         this.count = 15;
         this.$input = $("section input")
         this.$search = $("section:nth-child(3) .input a")
@@ -108,11 +108,9 @@ var search = {
         this.start();
     },
     start: function () {
-        console.log(this.$search[0])
         this.$search.on("click", getData.bind(this));
         this.$search[0].addEventListener("click", function () {
             this.clear();
-            console.log("ok")
         }.bind(this))
     },
     getData: getData,
@@ -127,10 +125,9 @@ var search = {
                 clearTimeout(that.clock);
             }
             that.clock = setTimeout(function () {
-                if ($('section').eq(1).height() - 10 <= $('main').scrollTop() + $(
-                        'main').height()) {
+                if ($('section').eq(2).height() - 10 <= $('main').scrollTop() + $(
+                    'main').height()) {
                     that.getData();
-                    console.log(that)
                 }
             }, 300)
 
@@ -151,6 +148,7 @@ function getData() {
     //     this.clear()
     // }
     $("main .loading").fadeIn('slow')
+    console.log("out:",this.index)
     $.ajax({
         url: `https://api.douban.com/${this.url}`,
         dataType: "jsonp",
@@ -166,8 +164,8 @@ function getData() {
         if (this.index + this.count >= this.total) {
             this.isfinish = true;
         };
+        console.log("in:",this.index)
     }.bind(this)).fail(function () {
-        console.log(`erro:${this.id}`)
     }).always(function () {
         $("main .loading").fadeOut("slow")
     })
@@ -206,7 +204,7 @@ function setData(data) {
     </div>
     `
     let node = $(template);
-
+try{
     node.find("img").attr("src", data.images.medium);
     node.find("h2").text(data.title);
     node.find(".rate").text(data.rating.average)
@@ -217,6 +215,10 @@ function setData(data) {
     node.find(".type").text(data.genres.join("/"));
     $(`section:nth-child(${this.id})>.layout`).append(node);
     this.lazyLoad();
+}catch(e){
+    console.log("maybe a mistake")
+}
+   
 }
 
 function setStr(arr) {

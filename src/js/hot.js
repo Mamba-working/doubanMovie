@@ -9,7 +9,7 @@ define([
             this.id = 2;
             this.url = "/v2/movie/in_theaters";
             this.isfinish = false;
-            this.total = 15;
+            this.total = 90;
             this.count = 15;
             this.start();
         },
